@@ -1,45 +1,46 @@
 #include "main.h"
 
 /**
- * main - Entry point for a simple shell program
- *
- * Description: The function provides a loop acts as a command-line
- * interface for the user, it will read commands from standart input,
- * removes unnecessary whitespaces, and passes input to '_fork' for execution.
- *
- * Return: exit_status
+ * main - command interpreter
+ * @argc: unused
+ * @argv: arguments
+ * Return: 0
  */
-
 int main(void)
 {
-	char *line = NULL;
-	size_t len = 0;
-	ssize_t nread;
-	int exit_status = 0;
+	char *input = NULL;
+	size_t size = 0;
+	ssize_t characters = 0;
+	int status = 0;
+	int exitst = 0;
 
 	while (1)
 	{
-		if (isatty(STDIN_FILEO))
-			printf("($) ");
-
-		nread = getline(&line, &len, stdin);
-		if (nread == -1)
+		if (isatty(STDIN_FILENO) == 1)
+			write(1, "$ ", 2);
+			
+		characters = getline(&input, &size, stdin);
+		if (characters == -1)
 		{
-			if (isatty(STDIN_FILENO))
-				printf("\n");
-
+			if (isatty(STDIN_FILENO) == 1)
+				write(1, "\n", 1);
 			break;
 		}
 
-		line[strlen(line, "\n")] = '\0';
-
-		if (sterlen(line) == 0)
+		if (input[characters - 1]  == '\n')
+			input[characters - 1]  = '\0';
+		if (*input == '\0')
 			continue;
-
-		exit_status = _fork(line);
+		if (command_read(input, characters) == 2)
+			break;
 	}
 
-	free(line);
+	free(input);
+	input = NULL;
 
-	return (exit_status);
+	exitst = WEXITSTATUS(status);
+
+
+	return (exitst);
+
 }
